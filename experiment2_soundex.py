@@ -1,4 +1,3 @@
-from sys import getsizeof
 from itertools import product
 
 class Soundex:

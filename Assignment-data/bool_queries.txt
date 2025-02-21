@@ -1,0 +1,50 @@
+aerodynamics AND wing AND slipstream
+shear AND flow AND flat AND plate AND incompressible AND fluid
+boundary AND layer AND shear AND flow AND flat AND plate
+heat AND conduction AND transient AND double-layer
+multilayer AND heat AND flow AND transient
+roughness AND boundary AND layer AND supersonic
+two-dimensional OR three-dimensional AND roughness
+transition AND skin AND friction AND Mach
+impact AND tube AND low AND pressure
+compressible AND flow AND mixing AND axial AND pressure
+aeroelasticity AND high-speed AND flight
+heated AND wings AND similarity AND laws
+piston AND theory AND aerodynamic
+flutter AND buckled AND plate
+compressible AND turbulent AND boundary AND layer
+eddy AND viscosity AND compressible AND mixing
+diffuser AND radial AND compressor
+pressure AND distribution AND conical AND bodies AND hypersonic
+Newtonian AND theory AND blunt-nosed
+heat AND transfer AND slip AND flow
+boundary AND layer AND heat AND transfer AND cylinder
+stagnation AND point AND heat AND transfer
+explosion AND solution AND hypersonic AND flow
+thermal AND stress AND aerodynamic AND heating
+thermoelastic AND wing AND structure
+supersonic AND wing AND NOT (panels AND thermal) AND buckling
+missile AND atmospheric AND descent
+magneto-aerodynamics
+magneto-gasdynamic AND constant AND temperature
+stagnation AND point AND hypersonic AND flow
+supersonic AND flow AND blunt AND bodies
+hypersonic AND heat AND transfer AND surface AND phenomena
+mixed AND subsonic AND supersonic AND pressure
+sonic AND stream AND airfoil
+boundary AND transition AND supersonic AND speeds
+gyroscopic AND effect AND propeller AND vibration
+roughness AND boundary AND layer
+cone AND pressure AND Mach AND 6.85
+separated AND flows AND heat AND transfer
+large AND matrices AND inversion
+low-aspect-ratio AND aircraft
+supersonic AND flow AND circular AND cone
+temperature AND profiles AND compressible AND boundary
+laminar AND boundary AND compressible AND fluids
+aerodynamics AND (slipstream OR boundary AND layer)
+shear AND flow AND NOT (compressible OR supersonic)
+(heat AND transfer OR thermal AND stress) AND wing
+boundary AND layer AND NOT (incompressible OR laminar)
+(compressible AND flow AND hypersonic) OR (boundary AND layer AND turbulence)
+transition AND NOT (supersonic OR hypersonic)

@@ -1,7 +1,7 @@
-import ijson
-import spacy
 from collections import defaultdict
-
+import ijson
+import os
+import spacy
 
 class BooleanRetrieval:
     def __init__(self, filepath):
@@ -100,6 +100,6 @@ if __name__=="__main__":
     query=input("Enter a term to search: ")
     
     relevant_docs=bronze_retrieve.retrieve(query)
-    # print(f"These are the relevant docs: {sorted(relevant_docs)}")
+    print(f"These are the relevant docs: {sorted(relevant_docs)}")
     bronze_retrieve.display_results(relevant_docs)
         
