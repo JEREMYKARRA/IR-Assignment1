@@ -126,14 +126,14 @@ def search_corrected_phrases(corrected_phrases, documents):
 
 # Example usage:
 if __name__ == "__main__":
-    dictionary = load_dictionary("dictionary2.txt")
+    dictionary = load_dictionary("dictionary.txt")
     documents = load_documents("Assignment-data/bool_docs.json")
     
     test_phrase = "befroe"
     
     # Get all possible corrections for each word
     all_corrections = spell_check_phrase_all_possibilities(test_phrase, dictionary)
-   
+
     # Generate and display possible combinations
     print("\nTop phrase combinations:")
     combinations = generate_correction_combinations(all_corrections)

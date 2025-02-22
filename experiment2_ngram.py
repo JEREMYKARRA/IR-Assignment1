@@ -90,7 +90,7 @@ class SpellChecker:
 
 # Usage example
 spell_checker = SpellChecker(n=2)  # Use bigrams (n=2) for better handling of short words
-spell_checker.load_dictionary("dictionary2.txt")
+spell_checker.load_dictionary("dictionary.txt")
 spell_checker.load_documents("Assignment-data/bool_docs.json")
 
 query = "acclartion"
