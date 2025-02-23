@@ -1,7 +1,7 @@
-import os
-import psutil
 from collections import defaultdict
 import ijson
+import os
+import psutil
 import time
 
 class BSBI:
@@ -14,7 +14,7 @@ class BSBI:
             os.makedirs("writtenBlocks")
         
     def parseBlocks(self):
-        with open("IR-Assignment-1/Assignment-data/bsbi_docs.json","r") as file:
+        with open("Assignment-data/bsbi_docs.json","r") as file:
             for obj in ijson.items(file,"item"):
                 docID=obj.get("Index")
                 for field in ["Title","Abstract"]:
@@ -36,7 +36,6 @@ class BSBI:
             
         return postings_block
     
-    #divide and conquer approach to mergingBlocks
     def mergeBase(self, block1, block2):
         mergedBlock=defaultdict(list)
         

@@ -1,13 +1,21 @@
+import json
+import os
 from itertools import product
+import psutil
 
 class Soundex:
-    def __init__(self):
+    def __init__(self,filepath):
         self.dictionary=self.load_dictionary()
+        self.documents=self.load_dataset(filepath)
     
     def load_dictionary(self):
-        with open("IR-Assignment-1/dictionary.txt","r") as file:
+        with open("dictionary.txt","r") as file:
             dictionary=[line.strip() for line in file]
-            return dictionary        
+            return dictionary
+    
+    def load_dataset(self, filepath):
+        with open(filepath,"r") as dataset:
+            return json.load(dataset)
 
     def soundex_tokenize(self,query):
         query=query.upper().split()        
@@ -40,11 +48,26 @@ class Soundex:
             
         return permutations
             
+    def searchDocs(self,permutation):
+        matchingDocs={}
+        
+        for doc in self.documents:
+            for key in ["Title", "Author", "Bibliographic Source", "Abstract"]:
+                if permutation.lower() in doc[key].lower():
+                    matchingDocs[doc["Index"]]=doc
+                            
+        return list(matchingDocs.values()) if matchingDocs else None
         
 if __name__=="__main__":
+    
     query=input("Enter search query:")
-    suggestions=Soundex().suggest_words(query)
+    soundex=Soundex("Assignment-data/bool_docs.json")
+    suggestions=soundex.suggest_words(query)
     cleaned_suggestions=[" ".join(suggested_word) for suggested_word in suggestions]
-    print(f"Did you mean any of these: {', '.join(sorted(cleaned_suggestions))}")
-
-#add bool ret
+    for suggestion in sorted(cleaned_suggestions):
+        matchingDocs=soundex.searchDocs(suggestion)
+        if matchingDocs:
+            print(f"Did you mean: {suggestion}")
+            print("Matching documents")
+            for doc in matchingDocs:
+                print(f"- Index {doc['Index']}: {doc['Title']}")

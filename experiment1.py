@@ -1,14 +1,27 @@
 from collections import defaultdict
 import ijson
 import os
+import psutil
 import spacy
+import time
 
 class BooleanRetrieval:
     def __init__(self, filepath):
-        self.nlp=spacy.load("en_core_web_sm")
-        self.invertedIndex=defaultdict(lambda:{"df":0,"docs":set()})
         self.documents={}
+        self.initial_memory = psutil.Process().memory_info().rss / (1024 * 1024)
+        self.invertedIndex=defaultdict(lambda:{"df":0,"docs":set()})
+        self.nlp=spacy.load("en_core_web_sm")
+        start_time=time.time()
+        
         self.build_index(filepath)
+        
+        end_time=time.time()
+        self.current_memory = psutil.Process().memory_info().rss / (1024*1024)
+        
+        elapsedTime=end_time-start_time
+        usedMemory=self.current_memory-self.initial_memory
+        
+        print(f"Inverted Index Construction\nTime taken: {elapsedTime:.2f} sec | Memory used: {usedMemory:.2f} MB")
     
     def tokenize(self,text):
         doc=self.nlp(text)
@@ -44,7 +57,16 @@ class BooleanRetrieval:
         
         return {word: {"docs":list(data["docs"]),"df":data["df"]} for word, data in self.invertedIndex.items()}
 
+    def writeInvertedIndexToFile(self):
+        with open("exp1_inverted_index.txt","w+") as file_out:
+            for term in sorted(self.invertedIndex.keys()):
+                data=self.invertedIndex[term]
+                file_out.write(f"{term} -> df: {data['df']} | docs: {', '.join(map(str, sorted(data['docs'])))}\n")
+
     def retrieve(self, query):
+        start_time=time.time()
+        initial_memory = psutil.Process().memory_info().rss / (1024 * 1024)
+        
         terms=query.split()
         term_stack=[]
         operator_stack=[]
@@ -82,6 +104,15 @@ class BooleanRetrieval:
         while operator_stack:
             apply_bool()
             
+        end_time=time.time()
+        current_memory = psutil.Process().memory_info().rss / (1024*1024)
+
+        timeElapsed=end_time-start_time
+        usedMemory=current_memory-initial_memory
+
+        print(f"Query Retrieval\nTime Taken: {timeElapsed:.2f} sec | Memory used: {usedMemory:.2f} MB")
+
+            
         return term_stack.pop() if term_stack else set()
     
     def display_results(self, doc_ids):
@@ -96,10 +127,12 @@ class BooleanRetrieval:
 if __name__=="__main__":
     filename="Assignment-data/bool_docs.json"
     bronze_retrieve=BooleanRetrieval(filename)
-    
+    bronze_retrieve.writeInvertedIndexToFile()
     query=input("Enter a term to search: ")
     
     relevant_docs=bronze_retrieve.retrieve(query)
-    print(f"These are the relevant docs: {sorted(relevant_docs)}")
-    bronze_retrieve.display_results(relevant_docs)
-        
+    if relevant_docs:
+        print(f"These are the relevant docs: {sorted(relevant_docs)}")
+        bronze_retrieve.display_results(relevant_docs)
+    else:
+        print(f"Sorry no documents found for {query}")
