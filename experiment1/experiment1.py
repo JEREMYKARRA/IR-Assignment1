@@ -5,6 +5,8 @@ import psutil
 import spacy
 import time
 
+#benchmarking
+
 class BooleanRetrieval:
     def __init__(self, filepath):
         self.documents={}
