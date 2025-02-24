@@ -10,8 +10,8 @@ class BSBI:
         self.block_dictionary=defaultdict(list)
         self.final_dictionary=defaultdict(list)
         
-        if not os.path.exists("writtenBlocks"):
-            os.makedirs("writtenBlocks")
+        if not os.path.exists("experiment3/writtenBlocks"):
+            os.makedirs("experiment3/writtenBlocks")
         
     def parseBlocks(self):
         with open("Assignment-data/bsbi_docs.json","r") as file:
@@ -90,18 +90,18 @@ class BSBI:
         self.final_dictionary=self.mergeRecursive(blocks,0,len(blocks)-1)
         
         #write final_dictionary to file_out
-        with open(f"writtenBlocks/blockMerged.txt","w+") as dict_out:
+        with open(f"experiment3/writtenBlocks/blockMerged.txt","w+") as dict_out:
             for term, postings in sorted(self.final_dictionary.items()):
                 dict_out.write(f"{term}:{','.join(map(str, postings))}\n")
             
     def writeBlockToDisk(self,blockID,postings_block):
-        with open(f"writtenBlocks/block{blockID}size{self.block_size}.txt","w+") as file_out:
+        with open(f"experiment3/writtenBlocks/block{blockID}size{self.block_size}.txt","w+") as file_out:
             for term, postings in sorted(postings_block.items()):
                 file_out.write(f"{term}:{','.join(map(str, postings))}\n")
             
     def readBlock(self, filepath):
         block=defaultdict(list)
-        with open(os.path.join("writtenBlocks/",filepath),"r") as file:
+        with open(os.path.join("experiment3/writtenBlocks/",filepath),"r") as file:
             for line in file:
                 term, postings = line.strip().split(":",1)
                 block[term] = postings.split(",") if postings else []
@@ -119,7 +119,7 @@ class BSBI:
             self.writeBlockToDisk(i,postings_block)
             i += 1
         
-        self.mergeBlocks("writtenBlocks")
+        self.mergeBlocks("experiment3/writtenBlocks")
         
         final_mem=process.memory_info().rss / (1024 * 1024)
         end_time=time.time()
