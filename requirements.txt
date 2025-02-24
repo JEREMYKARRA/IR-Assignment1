@@ -1,0 +1,53 @@
+annotated-types @ file:///home/conda/feedstock_root/build_artifacts/annotated-types_1733247046149/work
+blis @ file:///Users/runner/miniforge3/conda-bld/cython-blis_1729663969351/work
+Brotli @ file:///Users/runner/miniforge3/conda-bld/brotli-split_1725267563793/work
+catalogue @ file:///Users/runner/miniforge3/conda-bld/catalogue_1736092458096/work
+certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1734380492396/work/certifi
+cffi @ file:///Users/runner/miniforge3/conda-bld/cffi_1725560578465/work
+charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1735929714516/work
+click @ file:///home/conda/feedstock_root/build_artifacts/click_1734858813237/work
+cloudpathlib @ file:///home/conda/feedstock_root/build_artifacts/cloudpathlib-meta_1729359055183/work
+colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1733218098505/work
+confection @ file:///Users/runner/miniforge3/conda-bld/confection_1701179243633/work
+cymem @ file:///Users/runner/miniforge3/conda-bld/cymem_1737125939254/work
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
+h2 @ file:///home/conda/feedstock_root/build_artifacts/h2_1738578511449/work
+hpack @ file:///home/conda/feedstock_root/build_artifacts/hpack_1737618293087/work
+hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1737618333194/work
+idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1733211830134/work
+ijson==3.3.0
+Jinja2 @ file:///home/conda/feedstock_root/build_artifacts/jinja2_1734823942230/work
+langcodes @ file:///home/conda/feedstock_root/build_artifacts/langcodes_1636741340529/work
+markdown-it-py @ file:///home/conda/feedstock_root/build_artifacts/markdown-it-py_1733250460757/work
+MarkupSafe @ file:///Users/runner/miniforge3/conda-bld/markupsafe_1733219728782/work
+mdurl @ file:///home/conda/feedstock_root/build_artifacts/mdurl_1733255585584/work
+murmurhash @ file:///Users/runner/miniforge3/conda-bld/murmurhash_1728932972983/work
+numpy @ file:///Users/runner/miniforge3/conda-bld/numpy_1737331092963/work/dist/numpy-2.2.2-cp312-cp312-macosx_11_0_arm64.whl#sha256=c99878c324afb8c279d9398c4443bf5111be4cded615466888c1ec9c5caf1871
+packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1733203243479/work
+preshed @ file:///Users/runner/miniforge3/conda-bld/preshed_1728945671721/work
+psutil==7.0.0
+pycparser @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pycparser_1733195786/work
+pydantic @ file:///home/conda/feedstock_root/build_artifacts/pydantic_1737761369378/work
+pydantic_core @ file:///Users/runner/miniforge3/conda-bld/pydantic-core_1734571536583/work
+Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1736243443484/work
+PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1733217236728/work
+requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1733217035951/work
+rich @ file:///home/conda/feedstock_root/build_artifacts/rich_1733342254348/work/dist
+setuptools==75.8.0
+shellingham @ file:///home/conda/feedstock_root/build_artifacts/shellingham_1733300899265/work
+smart_open @ file:///home/conda/feedstock_root/build_artifacts/smart_open_1734485076778/work/dist
+spacy @ file:///Users/runner/miniforge3/conda-bld/spacy_1732449904668/work
+spacy-legacy @ file:///home/conda/feedstock_root/build_artifacts/spacy-legacy_1674550301837/work
+spacy-loggers @ file:///home/conda/feedstock_root/build_artifacts/spacy-loggers_1694527114282/work
+srsly @ file:///Users/runner/miniforge3/conda-bld/srsly_1737143242296/work
+thinc @ file:///Users/runner/miniforge3/conda-bld/thinc_1733202771399/work
+tqdm @ file:///home/conda/feedstock_root/build_artifacts/tqdm_1735661334605/work
+typer==0.15.1
+typer-slim==0.15.1
+typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1733188668063/work
+urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1734859416348/work
+wasabi @ file:///Users/runner/miniforge3/conda-bld/wasabi_1715409719530/work
+weasel @ file:///home/conda/feedstock_root/build_artifacts/weasel_1734270156651/work
+wheel==0.45.1
+wrapt @ file:///Users/runner/miniforge3/conda-bld/wrapt_1736869483984/work
+zstandard==0.23.0

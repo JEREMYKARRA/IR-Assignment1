@@ -5,8 +5,6 @@ import psutil
 import spacy
 import time
 
-#benchmarking
-
 class BooleanRetrieval:
     def __init__(self, filepath):
         self.documents={}
@@ -60,7 +58,7 @@ class BooleanRetrieval:
         return {word: {"docs":list(data["docs"]),"df":data["df"]} for word, data in self.invertedIndex.items()}
 
     def writeInvertedIndexToFile(self):
-        with open("exp1_inverted_index.txt","w+") as file_out:
+        with open("experiment1/exp1_inverted_index.txt","w+") as file_out:
             for term in sorted(self.invertedIndex.keys()):
                 data=self.invertedIndex[term]
                 file_out.write(f"{term} -> df: {data['df']} | docs: {', '.join(map(str, sorted(data['docs'])))}\n")
@@ -120,11 +118,12 @@ class BooleanRetrieval:
     def display_results(self, doc_ids):
         for doc_id in sorted(doc_ids):
             doc =self.documents.get(doc_id, {})
-            print(f"Title: {doc.get('Title', 'N/A')}\n"
-                    f"Author: {doc.get('Author', 'N/A')}\n"
-                    f"Bibliographic Source: {doc.get('Bibliographic Source', 'N/A')}\n"
-                    f"Abstract: {doc.get('Abstract', 'N/A')}\n"
-            )
+            print(f"- Index {doc_id} | Title: {doc.get('Title','N/A')}")
+            # print(f"Title: {doc.get('Title', 'N/A')}\n"
+            #         f"Author: {doc.get('Author', 'N/A')}\n"
+            #         f"Bibliographic Source: {doc.get('Bibliographic Source', 'N/A')}\n"
+            #         f"Abstract: {doc.get('Abstract', 'N/A')}\n"
+            # )
 
 if __name__=="__main__":
     filename="Assignment-data/bool_docs.json"
@@ -134,7 +133,7 @@ if __name__=="__main__":
     
     relevant_docs=bronze_retrieve.retrieve(query)
     if relevant_docs:
-        print(f"These are the relevant docs: {sorted(relevant_docs)}")
+        # print(f"These are the relevant docs: {sorted(relevant_docs)}")
         bronze_retrieve.display_results(relevant_docs)
     else:
         print(f"Sorry no documents found for {query}")
