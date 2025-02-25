@@ -93,7 +93,7 @@ spell_checker = SpellChecker(n=2)  # Use bigrams (n=2) for better handling of sh
 spell_checker.load_dictionary("dictionary.txt")
 spell_checker.load_documents("Assignment-data/bool_docs.json")
 
-query = "acclartion"
+query = "hihg spead aerodynmaics"
 corrected_phrase, all_corrections, matching_docs = spell_checker.find_documents(query)
 
 print(f"Original query: {query}")

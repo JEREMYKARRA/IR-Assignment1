@@ -1,5 +1,6 @@
 import json
 import os
+import pandas as pd
 from itertools import product
 import psutil
 
@@ -7,6 +8,8 @@ class Soundex:
     def __init__(self,filepath):
         self.dictionary=self.load_dictionary()
         self.documents=self.load_dataset(filepath)
+        self.columns=["Query", "TP", "FP", "Precision", "Accuracy"]
+        self.df=pd.DataFrame(columns=self.columns)
     
     def load_dictionary(self):
         with open("dictionary.txt","r") as file:
@@ -58,16 +61,44 @@ class Soundex:
                             
         return list(matchingDocs.values()) if matchingDocs else None
         
+    def writeResults(self,query, corrected, suggestions):
+        TP, FP= 0, 0
+        for suggestion in suggestions:
+            if suggestion==corrected:
+                TP += 1
+            else:
+                FP += 1
+                
+        precision = TP / (TP + FP) if (TP+FP) > 0 else 0
+        accuracy = TP/len(suggestions) if len(suggestions) else 0
+            
+        i=len(self.df)
+        self.df.loc[i]=[query,TP, FP, precision, accuracy]
+        
 if __name__=="__main__":
-    
-    query=input("Enter search query:")
     soundex=Soundex("Assignment-data/bool_docs.json")
-    suggestions=soundex.suggest_words(query)
-    cleaned_suggestions=[" ".join(suggested_word) for suggested_word in suggestions]
-    for suggestion in sorted(cleaned_suggestions):
-        matchingDocs=soundex.searchDocs(suggestion)
-        if matchingDocs:
-            print(f"Did you mean: {suggestion}")
-            print("Matching documents")
-            for doc in matchingDocs:
-                print(f"- Index {doc['Index']}: {doc['Title']}")
+    # for evaulation
+    with open("Assignment-data/spell_queries.json") as queryFile:
+        testSet=json.load(queryFile)
+        for line in testSet:
+            query=line['query']
+        #singular runtime search
+            # query=input("Enter search query:")
+            suggestions=soundex.suggest_words(query)
+            cleaned_suggestions=[" ".join(suggested_word) for suggested_word in suggestions]
+            soundex.writeResults(query, line['corrected'],sorted(cleaned_suggestions))
+            with open("experiment2/soundexResults.txt","a+") as file:
+                file.write(f"for {query}, did you mean: {cleaned_suggestions[:50]}\n")
+        
+        soundex.df.to_csv("experiment2/soundexResults.txt",sep="\t",index=False, mode='a')
+        print(f"Precision = {(soundex.df["TP"].sum()/len(soundex.df)):.3f} | Accuracy = {(soundex.df["TP"].sum()/soundex.df[["TP","FP"]].sum(axis=1).sum()):.6f}")
+        with open("experiment2/soundexResults.txt","a+") as file:
+            file.write(f"\nPrecision = {(soundex.df["TP"].sum()/len(soundex.df)):.3f} | Accuracy = {(soundex.df["TP"].sum()/soundex.df[["TP","FP"]].sum(axis=1).sum()):.6f}")
+        # To display results during runtime
+            # for suggestion in sorted(cleaned_suggestions):
+            #     matchingDocs=soundex.searchDocs(suggestion)
+            #     if matchingDocs:
+            #         print(f"Did you mean: {suggestion}")
+            #         print("Matching documents")
+            #         for doc in matchingDocs:
+            #             print(f"- Index {doc['Index']}: {doc['Title']}")

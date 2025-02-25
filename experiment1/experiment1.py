@@ -64,6 +64,9 @@ class BooleanRetrieval:
                 file_out.write(f"{term} -> df: {data['df']} | docs: {', '.join(map(str, sorted(data['docs'])))}\n")
 
     def retrieve(self, query):
+        if(len(query)==1):
+            return self.invertedIndex.get(query,{}).get("docs",set())
+        
         start_time=time.time()
         initial_memory = psutil.Process().memory_info().rss / (1024 * 1024)
         
@@ -130,6 +133,10 @@ if __name__=="__main__":
     bronze_retrieve=BooleanRetrieval(filename)
     bronze_retrieve.writeInvertedIndexToFile()
     query=input("Enter a term to search: ")
+    
+    # for term in query.split():
+    #     matchingDocs=bronze_retrieve.retrieve(term)
+    #     print(f"These are the relevant docs: {sorted(matchingDocs)}")
     
     relevant_docs=bronze_retrieve.retrieve(query)
     if relevant_docs:

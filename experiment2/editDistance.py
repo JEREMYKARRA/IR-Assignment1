@@ -102,7 +102,7 @@ if __name__ == "__main__":
     dictionary = load_dictionary("dictionary.txt")
     documents = load_documents("Assignment-data/bool_docs.json")
     
-    test_phrase = "befroe"
+    test_phrase = "hihg spead aerodynmaics"
 
     all_corrections = spell_check_phrase_all_possibilities(test_phrase, dictionary)
     

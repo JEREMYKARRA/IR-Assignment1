@@ -87,9 +87,9 @@ class NgramSpellChecker:
 
 if __name__ == "__main__":
     spell_checker = NgramSpellChecker(n=2)
-    spell_checker.load_dictionary("dictionary2.txt")
+    spell_checker.load_dictionary("dictionary.txt")
     spell_checker.load_documents("Assignment-data/bool_docs.json")
-    test_phrase = "akoustic"
+    test_phrase = "hihg spead aerodynmaics"
     result = spell_checker.suggest_correction(test_phrase)
     print(f"Corrected Phrase: {result['corrected_phrase']}")
     print(f"Found in document indexes: {result['documents']}")
