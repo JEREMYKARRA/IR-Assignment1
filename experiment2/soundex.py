@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from itertools import product
 import psutil
+from tabulate import tabulate 
 
 class Soundex:
     def __init__(self,filepath):
@@ -80,6 +81,7 @@ if __name__=="__main__":
     # for evaulation
     with open("Assignment-data/spell_queries.json") as queryFile:
         testSet=json.load(queryFile)
+    with open("experiment2/soundexResults.txt","w") as file:
         for line in testSet:
             query=line['query']
         #singular runtime search
@@ -87,12 +89,14 @@ if __name__=="__main__":
             suggestions=soundex.suggest_words(query)
             cleaned_suggestions=[" ".join(suggested_word) for suggested_word in suggestions]
             soundex.writeResults(query, line['corrected'],sorted(cleaned_suggestions))
-            with open("experiment2/soundexResults.txt","a+") as file:
+            with open("experiment2/soundexResults.txt","a") as file:
                 file.write(f"for {query}, did you mean: {cleaned_suggestions[:50]}\n")
         
-        soundex.df.to_csv("experiment2/soundexResults.txt",sep="\t",index=False, mode='a')
         print(f"Precision = {(soundex.df["TP"].sum()/len(soundex.df)):.3f} | Accuracy = {(soundex.df["TP"].sum()/soundex.df[["TP","FP"]].sum(axis=1).sum()):.6f}")
-        with open("experiment2/soundexResults.txt","a+") as file:
+        with open("experiment2/soundexResults.txt","a") as file:
+            file.write("\n")
+            file.write(tabulate(soundex.df,headers="keys",))
+            file.write("\n")
             file.write(f"\nPrecision = {(soundex.df["TP"].sum()/len(soundex.df)):.3f} | Accuracy = {(soundex.df["TP"].sum()/soundex.df[["TP","FP"]].sum(axis=1).sum()):.6f}")
         # To display results during runtime
             # for suggestion in sorted(cleaned_suggestions):
