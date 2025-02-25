@@ -1,23 +1,31 @@
 import json
+import re
 import time
 import platform
 import psutil
 import tracemalloc
 from collections import defaultdict
-from difflib import SequenceMatcher
 
-class SpellChecker:
+class NgramSpellChecker:
     def __init__(self, n=2):
-        self.dictionary = set()
-        self.documents = []
         self.n = n
-        self.word_ngrams = defaultdict(set)
+        self.dictionary = set()
+        self.word_ngrams = {}
+        self.ngram_words = defaultdict(set)
+        self.word_to_docs = defaultdict(set)
+        self.doc_contents = {}
 
     def load_dictionary(self, file_path):
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                self.dictionary = set(word.strip().lower() for word in f)
-            self._preprocess_dictionary()
+            with open(file_path, 'r', encoding='utf-8') as file:
+                for line in file:
+                    word = line.strip().lower()
+                    if len(word) > 2:
+                        self.dictionary.add(word)
+                        word_ngrams = self.generate_ngrams(word)
+                        self.word_ngrams[word] = word_ngrams
+                        for ngram in word_ngrams:
+                            self.ngram_words[ngram].add(word)
             return len(self.dictionary)
         except FileNotFoundError:
             print(f"Error: Dictionary file {file_path} not found.")
@@ -25,91 +33,73 @@ class SpellChecker:
 
     def load_documents(self, file_path):
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                self.documents = json.load(f)
-            return len(self.documents)
+            with open(file_path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+                for doc in data:
+                    doc_id = doc.get("Index", len(self.doc_contents) + 1)
+                    text = " ".join(str(value) for value in doc.values()).lower()
+                    self.doc_contents[doc_id] = text
+                    
+                    words = re.findall(r'\w+', text)
+                    for word in words:
+                        if len(word) > 2:
+                            self.dictionary.add(word)
+                            word_ngrams = self.generate_ngrams(word)
+                            self.word_ngrams[word] = word_ngrams
+                            for ngram in word_ngrams:
+                                self.ngram_words[ngram].add(word)
+                            self.word_to_docs[word].add(doc_id)
+            return len(data)
         except FileNotFoundError:
-            print(f"Error: Document file {file_path} not found.")
+            print(f"Error: Could not find file {file_path}")
             return 0
         except json.JSONDecodeError:
             print(f"Error: Invalid JSON format in {file_path}")
             return 0
 
-    def _preprocess_dictionary(self):
-        for word in self.dictionary:
-            ngrams = self._generate_ngrams(word)
-            for ngram in ngrams:
-                self.word_ngrams[ngram].add(word)
+    def generate_ngrams(self, word):
+        return {word[i:i+self.n] for i in range(len(word) - self.n + 1)}
 
-    def _generate_ngrams(self, word):
-        return set(word[i:i+self.n] for i in range(max(0, len(word)-self.n+1)))
+    def jaccard_similarity(self, set1, set2):
+        intersection = len(set1 & set2)
+        union = len(set1 | set2)
+        return intersection / union if union != 0 else 0
 
-    def _jaccard_similarity(self, set1, set2):
-        intersection = len(set1.intersection(set2))
-        union = len(set1.union(set2))
-        return intersection / union if union > 0 else 0
-
-    def _levenshtein_similarity(self, word1, word2):
-        return SequenceMatcher(None, word1, word2).ratio()
-
-    def correct_word(self, word, debug=False):
-        if debug:
-            print(f"Correcting word: {word}")
-        candidates = []
+    def suggest_correction_word(self, word):
+        word_ngrams = self.generate_ngrams(word)
+        max_similarity = 0
+        best_matches = []
 
         for candidate in self.dictionary:
+            similarity = self.jaccard_similarity(word_ngrams, self.word_ngrams.get(candidate, set()))
+            if similarity > max_similarity:
+                max_similarity = similarity
+                best_matches = [candidate]
+            elif similarity == max_similarity:
+                best_matches.append(candidate)
 
-            jaccard = self._jaccard_similarity(
-                self._generate_ngrams(word.lower()), 
-                self._generate_ngrams(candidate)
-            )
-            levenshtein = self._levenshtein_similarity(word.lower(), candidate)
-            combined_score = 0.5 * jaccard + 0.5 * levenshtein
+        return best_matches if best_matches else [word] 
 
-            candidates.append((candidate, combined_score))
-
-        candidates = sorted(candidates, key=lambda x: x[1], reverse=True)
-
-        candidates = [c for c in candidates if c[1] >= 0.5]
-
-        if debug:
-            print(f"Candidates for '{word}': {candidates[:5]}")  
-        return candidates if candidates else [(word, 0.0)]
-
-    def correct_phrase(self, phrase, debug=False):
-        words = phrase.split()
+    def suggest_correction(self, phrase):
+        words = re.findall(r'\w+', phrase.lower())
         corrected_words = []
-        all_corrections = {}
-
+        
         for word in words:
-            if word.lower() not in self.dictionary:
-                corrections = self.correct_word(word, debug)
-                corrected_words.append(corrections[0][0])  
-                all_corrections[word] = corrections 
-            else:
-                corrected_words.append(word)
-                all_corrections[word] = [(word, 1.0)] 
+            best_matches = self.suggest_correction_word(word)
+            corrected_words.append(best_matches[0]) 
 
-        return ' '.join(corrected_words), all_corrections
+        corrected_phrase = " ".join(corrected_words)
+        
+        matching_docs = [doc_id for doc_id, text in self.doc_contents.items() if corrected_phrase in text]
 
-    def find_documents(self, phrase, debug=False):
-        corrected_phrase, all_corrections = self.correct_phrase(phrase, debug)
-        matching_docs = []
-
-        for doc in self.documents:
-            if corrected_phrase.lower() in doc.get('Title', '').lower() or corrected_phrase.lower() in doc.get('Abstract', '').lower():
-                matching_docs.append(doc.get('Index', None))
-
-        return corrected_phrase, all_corrections, matching_docs
+        return {"corrected_phrase": corrected_phrase, "documents": matching_docs}
     
     def spell_check_phrase(self, phrase):
-
-        corrected_phrase, _ = self.correct_phrase(phrase)
-        return corrected_phrase
+        result = self.suggest_correction(phrase)
+        return result["corrected_phrase"]
 
 
 def load_test_queries(file_path):
-
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             return json.load(file)
@@ -122,7 +112,6 @@ def load_test_queries(file_path):
 
 
 def format_bytes(bytes):
-
     for unit in ['B', 'KB', 'MB', 'GB']:
         if bytes < 1024 or unit == 'GB':
             return f"{bytes:.2f} {unit}"
@@ -130,7 +119,6 @@ def format_bytes(bytes):
 
 
 def get_system_info():
-
     processor = platform.processor()
     if not processor:
         processor = platform.machine()
@@ -147,7 +135,6 @@ def get_system_info():
 
 
 def benchmark_spell_checker(spell_checker, queries):
-
     total_time = 0
     results = []
 
@@ -194,6 +181,7 @@ def benchmark_spell_checker(spell_checker, queries):
 
 
 def print_benchmark_results(results, system_info, algorithm_name):
+
     print(f"\n========== {algorithm_name} BENCHMARK RESULTS ==========")
     print(f"System Information:")
     print(f"  - Processor: {system_info['processor']}")
@@ -218,9 +206,10 @@ def print_benchmark_results(results, system_info, algorithm_name):
 
 
 def measure_initialization_time(dictionary_path, docs_path=None):
+
     start_time = time.time()
- 
-    spell_checker = SpellChecker(n=2)
+    
+    spell_checker = NgramSpellChecker(n=2)
     init_time = time.time() - start_time
 
     dict_start_time = time.time()
@@ -249,6 +238,7 @@ def measure_initialization_time(dictionary_path, docs_path=None):
 
 def print_initialization_results(results):
 
+    print("\n========== INITIALIZATION BENCHMARK ==========")
     print(f"Initialization time: {results['initialization_time']:.4f} seconds")
     print(f"Dictionary load time: {results['dictionary_load_time']:.4f} seconds (Loaded {results['dictionary_count']} words)")
     
@@ -259,34 +249,32 @@ def print_initialization_results(results):
 
 
 if __name__ == "__main__":
+
     system_info = get_system_info()
     print("System Information:", system_info)
 
-    dictionary_path = "dictionary2.txt"
+    dictionary_path = "dictionary.txt"
     documents_path = "Assignment-data/bool_docs.json"
-    
-    print("\nInitializing Hybrid Spell Checker and loading data...")
+
+    print("\nInitializing N-gram Spell Checker and loading data...")
     init_results = measure_initialization_time(dictionary_path, documents_path)
     spell_checker = init_results["spell_checker"]
     print_initialization_results(init_results)
-    
+
     print("\nLoading test queries...")
-    queries_path = "Assignment-data\spell_queries.json"
+    queries_path = "Assignment-data/spell_queries.json"
     queries = load_test_queries(queries_path)
     print(f"Loaded {len(queries)} test queries.")
-    
     print("\nRunning benchmark...")
     benchmark_results = benchmark_spell_checker(spell_checker, queries)
-    
 
-    print_benchmark_results(benchmark_results, system_info, "HYBRID SPELL CHECKER")
+    print_benchmark_results(benchmark_results, system_info, "N-GRAM SPELL CHECKER")
 
-    print("\nSample Corrections (with detailed candidates):")
+    print("\nSample Corrections:")
     sample_queries = ["akoustic", "abzorption", "bureacratic", "aproximatley"]
     for query in sample_queries:
-        corrected, corrections = spell_checker.correct_phrase(query, debug=True)
-        print(f"\n  '{query}' -> '{corrected}'")
-        if query in corrections:
-            print(f"  Top candidates for '{query}':")
-            for candidate, score in corrections[query][:3]:
-                print(f"    - '{candidate}' (score: {score:.4f})")
+        corrected = spell_checker.spell_check_phrase(query)
+        print(f"  '{query}' -> '{corrected}'")
+
+    with  open("experiment2/nGramResults.txt","w+") as file_out:
+        file_out.write(f"- Total Queries: {benchmark_results['total_queries']}\n- Total Time: {benchmark_results['total_time']:.4f} seconds\n- Average Time per Query: {benchmark_results['average_time']:.4f} seconds\n- Correct Results: {benchmark_results['correct_count']}/{benchmark_results['total_queries']} ({benchmark_results['accuracy'] * 100:.2f}%)")

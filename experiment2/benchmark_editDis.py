@@ -184,11 +184,11 @@ if __name__ == "__main__":
     system_info = get_system_info()
     
     print("Loading dictionary...")
-    dictionary = load_dictionary("dictionary2.txt")
+    dictionary = load_dictionary("dictionary.txt")
     print(f"Dictionary loaded with {len(dictionary)} words.")
     
     print("Loading test queries...")
-    queries = load_test_queries("Assignment-data\spell_queries.json")
+    queries = load_test_queries("Assignment-data/spell_queries.json")
     print(f"Loaded {len(queries)} test queries.")
     
     # Benchmark
@@ -197,3 +197,6 @@ if __name__ == "__main__":
     
     # Print results
     print_benchmark_results(benchmark_results, system_info)
+    
+    with open("experiment2/editDistanceResults.txt","w+") as file_out:
+        file_out.write(f"- Total Queries: {benchmark_results['total_queries']}\n- Total Time: {benchmark_results['total_time']:.4f} seconds\n- Average Time per Query: {benchmark_results['average_time']:.4f} seconds\n- Correct Results: {benchmark_results['correct_count']}/{benchmark_results['total_queries']} ({benchmark_results['accuracy'] * 100:.2f}%)")
