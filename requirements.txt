@@ -24,6 +24,7 @@ mdurl @ file:///home/conda/feedstock_root/build_artifacts/mdurl_1733255585584/wo
 murmurhash @ file:///Users/runner/miniforge3/conda-bld/murmurhash_1728932972983/work
 numpy @ file:///Users/runner/miniforge3/conda-bld/numpy_1737331092963/work/dist/numpy-2.2.2-cp312-cp312-macosx_11_0_arm64.whl#sha256=c99878c324afb8c279d9398c4443bf5111be4cded615466888c1ec9c5caf1871
 packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1733203243479/work
+pandas==2.2.3
 preshed @ file:///Users/runner/miniforge3/conda-bld/preshed_1728945671721/work
 psutil==7.0.0
 pycparser @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pycparser_1733195786/work
@@ -31,20 +32,25 @@ pydantic @ file:///home/conda/feedstock_root/build_artifacts/pydantic_1737761369
 pydantic_core @ file:///Users/runner/miniforge3/conda-bld/pydantic-core_1734571536583/work
 Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1736243443484/work
 PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1733217236728/work
+python-dateutil==2.9.0.post0
+pytz==2025.1
 requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1733217035951/work
 rich @ file:///home/conda/feedstock_root/build_artifacts/rich_1733342254348/work/dist
 setuptools==75.8.0
 shellingham @ file:///home/conda/feedstock_root/build_artifacts/shellingham_1733300899265/work
+six==1.17.0
 smart_open @ file:///home/conda/feedstock_root/build_artifacts/smart_open_1734485076778/work/dist
 spacy @ file:///Users/runner/miniforge3/conda-bld/spacy_1732449904668/work
 spacy-legacy @ file:///home/conda/feedstock_root/build_artifacts/spacy-legacy_1674550301837/work
 spacy-loggers @ file:///home/conda/feedstock_root/build_artifacts/spacy-loggers_1694527114282/work
 srsly @ file:///Users/runner/miniforge3/conda-bld/srsly_1737143242296/work
+tabulate==0.9.0
 thinc @ file:///Users/runner/miniforge3/conda-bld/thinc_1733202771399/work
 tqdm @ file:///home/conda/feedstock_root/build_artifacts/tqdm_1735661334605/work
 typer==0.15.1
 typer-slim==0.15.1
 typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1733188668063/work
+tzdata==2025.1
 urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1734859416348/work
 wasabi @ file:///Users/runner/miniforge3/conda-bld/wasabi_1715409719530/work
 weasel @ file:///home/conda/feedstock_root/build_artifacts/weasel_1734270156651/work

@@ -11,6 +11,7 @@ class Soundex:
         self.documents=self.load_dataset(filepath)
         self.columns=["Query", "TP", "FP", "Precision", "Accuracy"]
         self.df=pd.DataFrame(columns=self.columns)
+        self.correctResults=0
     
     def load_dictionary(self):
         with open("dictionary.txt","r") as file:
@@ -75,6 +76,8 @@ class Soundex:
             
         i=len(self.df)
         self.df.loc[i]=[query,TP, FP, precision, accuracy]
+        if TP > 0:
+            self.correctResults += 1
         
 if __name__=="__main__":
     soundex=Soundex("Assignment-data/bool_docs.json")
@@ -92,12 +95,12 @@ if __name__=="__main__":
             with open("experiment2/soundexResults.txt","a") as file:
                 file.write(f"for {query}, did you mean: {cleaned_suggestions[:50]}\n")
         
-        print(f"Precision = {(soundex.df["TP"].sum()/len(soundex.df)):.3f} | Accuracy = {(soundex.df["TP"].sum()/soundex.df[["TP","FP"]].sum(axis=1).sum()):.6f}")
+        print(f"Precision = {(soundex.df["TP"].sum()/len(soundex.df)):.3f} | Accuracy acc to the formula= {(soundex.df["TP"].sum()/soundex.df[["TP","FP"]].sum(axis=1).sum()):.6f} | Correct Results = {soundex.correctResults}/{len(soundex.df)} | Accuracy (based on Correct Results)={soundex.correctResults/len(soundex.df)}")
         with open("experiment2/soundexResults.txt","a") as file:
             file.write("\n")
             file.write(tabulate(soundex.df,headers="keys",))
             file.write("\n")
-            file.write(f"\nPrecision = {(soundex.df["TP"].sum()/len(soundex.df)):.3f} | Accuracy = {(soundex.df["TP"].sum()/soundex.df[["TP","FP"]].sum(axis=1).sum()):.6f}")
+            file.write(f"\nPrecision = {(soundex.df["TP"].sum()/len(soundex.df)):.3f} | Accuracy acc to the formula= {(soundex.df["TP"].sum()/soundex.df[["TP","FP"]].sum(axis=1).sum()):.6f} | Correct Results = {soundex.correctResults}/{len(soundex.df)} | Accuracy (based on Correct Results)={soundex.correctResults/len(soundex.df):3f}")
         # To display results during runtime
             # for suggestion in sorted(cleaned_suggestions):
             #     matchingDocs=soundex.searchDocs(suggestion)
